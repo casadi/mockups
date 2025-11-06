@@ -69,6 +69,6 @@ configure_package_config_file(
 
 
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/madnlpConfigVersion.cmake"
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/libMadConfigVersion.cmake"
   DESTINATION cmake
 )
