@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [macos-m1,macos-12,macos-13,macos-14]
+        image: [macos-15-intel,macos-14]
         BUILD_TYPE: [Release,Debug]
     steps:
       - uses: actions/checkout@v3.3.0
@@ -73,7 +73,7 @@ jobs:
       - uses: casadi/action-setup-compiler@master
         with:
           cache-suffix: ''
-          target: ${{(matrix.image == 'macos-m1' || matrix.image == 'macos-14') && 'arm64' || 'x86_64'}}
+          target: ${{ matrix.image == 'macos-15-intel' && 'x86_64' || 'arm64'}}
       - name: Build
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
