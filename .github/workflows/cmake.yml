@@ -9,7 +9,7 @@ env:
 
 jobs:
   build-dockcross:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       arch: manylinux1-x64
     strategy:
