@@ -59,12 +59,11 @@ jobs:
 
   build-osx:
     runs-on: ${{matrix.image == 'macos-m1' && 'self-hosted' || matrix.image }}
-    env:
-      arch: manylinux1-x64
     strategy:
       fail-fast: false
       matrix:
-        image: [macos-15-intel,macos-14]
+        image: [macos-14]
+        target: [arm64, x86_64]
         BUILD_TYPE: [Release,Debug]
     steps:
       - uses: actions/checkout@v3.3.0
@@ -73,12 +72,12 @@ jobs:
       - uses: casadi/action-setup-compiler@master
         with:
           cache-suffix: ''
-          target: ${{ matrix.image == 'macos-15-intel' && 'x86_64' || 'arm64'}}
+          target: ${{ matrix.target }}
       - name: Build
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
         run: |
-          CC=${{ env.CC }} FC=${{ env.FC }} CXX=${{ env.CXX }} cmake -DCMAKE_OSX_SYSROOT=${{env.CONDA_BUILD_SYSROOT}} -B build -DCMAKE_BUILD_TYPE=${{matrix.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
+          CC=${{ env.CC }} FC=${{ env.FC }} CXX=${{ env.CXX }} cmake -DCMAKE_OSX_SYSROOT=${{env.CONDA_BUILD_SYSROOT}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.target}} -B build -DCMAKE_BUILD_TYPE=${{matrix.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
           cmake --build build --target install --config ${{matrix.BUILD_TYPE}}
 
       - run: ls ${{github.workspace}}/install
@@ -88,20 +87,20 @@ jobs:
         with:
           files: install/
           recursive: true
-          dest: mockups_${{matrix.image}}_${{matrix.BUILD_TYPE}}.zip
+          dest: mockups_${{matrix.image}}_${{matrix.target}}_${{matrix.BUILD_TYPE}}.zip
       - run: ls ${{github.workspace}}
 
       - uses: actions/upload-artifact@v4.3.1
         if: ${{ ! startsWith(github.ref, 'refs/tags/') }}
         with:
-          name: mockups_${{matrix.image}}_${{matrix.BUILD_TYPE}}
-          path: ${{github.workspace}}/mockups_${{matrix.image}}_${{matrix.BUILD_TYPE}}.zip
+          name: mockups_${{matrix.image}}_${{matrix.target}}_${{matrix.BUILD_TYPE}}
+          path: ${{github.workspace}}/mockups_${{matrix.image}}_${{matrix.target}}_${{matrix.BUILD_TYPE}}.zip
 
       - name: Release
         uses: softprops/action-gh-release@v0.1.15
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files:  ${{github.workspace}}/mockups_${{matrix.image}}_${{matrix.BUILD_TYPE}}.zip
+          files:  ${{github.workspace}}/mockups_${{matrix.image}}_${{matrix.target}}_${{matrix.BUILD_TYPE}}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
      
