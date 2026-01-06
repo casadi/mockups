@@ -57,7 +57,16 @@ elseif(${CMAKE_GENERATOR} MATCHES "MSYS Makefiles")
 endif()
 
 if(APPLE)
- if (${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "arm64")
+ # Check for universal binaries (both architectures present) - use mexmaca
+ if (CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" AND CMAKE_OSX_ARCHITECTURES MATCHES "arm64")
+   set(MATLAB_MEX_EXT "mexmaca${NBITS_TWO}")
+ # Check target architecture, not host processor
+ elseif (CMAKE_OSX_ARCHITECTURES MATCHES "x86_64")
+   set(MATLAB_MEX_EXT "mexmaci${NBITS_TWO}")
+ elseif (CMAKE_OSX_ARCHITECTURES MATCHES "arm64")
+   set(MATLAB_MEX_EXT "mexmaca${NBITS_TWO}")
+ # Fallback to host processor if CMAKE_OSX_ARCHITECTURES not set
+ elseif (${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "arm64")
    set(MATLAB_MEX_EXT "mexmaca${NBITS_TWO}")
  else()
    set(MATLAB_MEX_EXT "mexmaci${NBITS_TWO}")
