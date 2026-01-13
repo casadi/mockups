@@ -195,6 +195,16 @@ int (*GRBstartenv)(GRBenv *) = NULL;
             if (GRBsetstrparam==NULL) { snprintf(err_msg, err_msg_len, "Could not find symbol 'GRBsetstrparam' in libgurobi%s.%s", suffix, library_suffix); return 2; };
             GRBupdatemodel = (int (*)(GRBmodel *)) dlsym(h, "GRBupdatemodel");
             if (GRBupdatemodel==NULL) { snprintf(err_msg, err_msg_len, "Could not find symbol 'GRBupdatemodel' in libgurobi%s.%s", suffix, library_suffix); return 2; };
+            GRBcbget = (int (*)(void*, int, int, void*)) dlsym(h, "GRBcbget");
+            if (GRBcbget==NULL) { snprintf(err_msg, err_msg_len, "Could not find symbol 'GRBcbget' in libgurobi%s.%s", suffix, library_suffix); return 2; };
+            GRBcblazy = (int (*)(void *, int, const int *, const double *, char, double)) dlsym(h, "GRBcblazy");
+            if (GRBcblazy==NULL) { snprintf(err_msg, err_msg_len, "Could not find symbol 'GRBcblazy' in libgurobi%s.%s", suffix, library_suffix); return 2; };
+            GRBemptyenv = (int (*)(GRBenv **)) dlsym(h, "GRBemptyenv");
+            if (GRBemptyenv==NULL) { snprintf(err_msg, err_msg_len, "Could not find symbol 'GRBemptyenv' in libgurobi%s.%s", suffix, library_suffix); return 2; };
+            GRBsetcallbackfunc = (int (*)(GRBmodel *, int (*)(GRBmodel *, void *, int, void *), void *)) dlsym(h, "GRBsetcallbackfunc");
+            if (GRBsetcallbackfunc==NULL) { snprintf(err_msg, err_msg_len, "Could not find symbol 'GRBsetcallbackfunc' in libgurobi%s.%s", suffix, library_suffix); return 2; };
+            GRBstartenv = (int (*)(GRBenv *)) dlsym(h, "GRBstartenv");
+            if (GRBstartenv==NULL) { snprintf(err_msg, err_msg_len, "Could not find symbol 'GRBstartenv' in libgurobi%s.%s", suffix, library_suffix); return 2; };
 
       #endif // _WIN32
       
