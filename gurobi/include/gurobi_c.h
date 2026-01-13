@@ -179,13 +179,13 @@ DLLSYMBOL int (__stdcall *GRBsetstrparam)(GRBenv *, const char *, const char *);
 #define GRBupdatemodel adaptor_GRBupdatemodel
 DLLSYMBOL int (__stdcall *GRBupdatemodel)(GRBmodel *);
 #define GRBcblazy adaptor_GRBcblazy
-DLLSYMBOL int GRBcblazy(void *, int, const int *, const double *, char, double);
+DLLSYMBOL int (__stdcall *GRBcblazy)(void *, int, const int *, const double *, char, double);
 #define GRBemptyenv adaptor_GRBemptyenv
-DLLSYMBOL int GRBemptyenv(GRBenv **);
+DLLSYMBOL int (__stdcall *GRBemptyenv)(GRBenv **);
 #define GRBsetcallbackfunc adaptor_GRBsetcallbackfunc
-DLLSYMBOL int GRBsetcallbackfunc(GRBmodel *, int (*)(GRBmodel *, void *, int, void *), void *);
+DLLSYMBOL int (__stdcall *GRBsetcallbackfunc)(GRBmodel *, int (*)(GRBmodel *, void *, int, void *), void *);
 #define GRBstartenv adaptor_GRBstartenv
-DLLSYMBOL int GRBstartenv(GRBenv *);
+DLLSYMBOL int (__stdcall *GRBstartenv)(GRBenv *);
 
 #ifdef __cplusplus
 }
