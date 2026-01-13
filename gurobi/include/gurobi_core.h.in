@@ -20,3 +20,8 @@ int GRBsetdblparam(GRBenv *, const char *, double);
 int GRBsetintparam(GRBenv *, const char *, int);
 int GRBsetstrparam(GRBenv *, const char *, const char *);
 int GRBupdatemodel(GRBmodel *);
+int GRBcbget(void*, int, int, void*);
+int GRBcblazy(void *, int, const int *, const double *, char, double);
+int GRBemptyenv(GRBenv **);
+int GRBsetcallbackfunc(GRBmodel *, int (*)(GRBmodel *, void *, int, void *), void *);
+int GRBstartenv(GRBenv *);

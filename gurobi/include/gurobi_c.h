@@ -109,7 +109,26 @@ typedef struct _GRBenv GRBenv;
 #define GRB_DBL_ATTR_NODECOUNT     "NodeCount"
 #define GRB_DBL_ATTR_OPENNODECOUNT "OpenNodeCount"
 #define GRB_INT_ATTR_HASDUALNORM   "HasDualNorm"
-             
+
+
+#define GRB_CB_POLLING   0
+#define GRB_CB_PRESOLVE  1
+#define GRB_CB_SIMPLEX   2
+#define GRB_CB_MIP       3
+#define GRB_CB_MIPSOL    4
+#define GRB_CB_MIPNODE   5
+#define GRB_CB_MESSAGE   6
+#define GRB_CB_BARRIER   7
+#define GRB_CB_MULTIOBJ  8
+
+#define GRB_CB_MIPSOL_SOL     4001
+#define GRB_CB_MIPSOL_OBJ     4002
+#define GRB_CB_MIPSOL_OBJBST  4003
+#define GRB_CB_MIPSOL_OBJBND  4004
+#define GRB_CB_MIPSOL_NODCNT  4005
+#define GRB_CB_MIPSOL_SOLCNT  4006
+#define GRB_CB_MIPSOL_OBJBNDC 4007
+ 
 #define GUROBI_ADAPTOR
 
 DLLSYMBOL int gurobi_adaptor_load(char* err_msg, unsigned int err_msg_len);
@@ -159,6 +178,14 @@ DLLSYMBOL int (__stdcall *GRBsetintparam)(GRBenv *, const char *, int);
 DLLSYMBOL int (__stdcall *GRBsetstrparam)(GRBenv *, const char *, const char *);
 #define GRBupdatemodel adaptor_GRBupdatemodel
 DLLSYMBOL int (__stdcall *GRBupdatemodel)(GRBmodel *);
+#define GRBcblazy adaptor_GRBcblazy
+DLLSYMBOL int GRBcblazy(void *, int, const int *, const double *, char, double);
+#define GRBemptyenv adaptor_GRBemptyenv
+DLLSYMBOL int GRBemptyenv(GRBenv **);
+#define GRBsetcallbackfunc adaptor_GRBsetcallbackfunc
+DLLSYMBOL int GRBsetcallbackfunc(GRBmodel *, int (*)(GRBmodel *, void *, int, void *), void *);
+#define GRBstartenv adaptor_GRBstartenv
+DLLSYMBOL int GRBstartenv(GRBenv *);
 
 #ifdef __cplusplus
 }
