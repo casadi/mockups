@@ -178,6 +178,8 @@ DLLSYMBOL int (__stdcall *GRBsetintparam)(GRBenv *, const char *, int);
 DLLSYMBOL int (__stdcall *GRBsetstrparam)(GRBenv *, const char *, const char *);
 #define GRBupdatemodel adaptor_GRBupdatemodel
 DLLSYMBOL int (__stdcall *GRBupdatemodel)(GRBmodel *);
+#define GRBcbget adaptor_GRBcbget
+DLLSYMBOL int (__stdcall *GRBcbget)(void*, int, int, void*);
 #define GRBcblazy adaptor_GRBcblazy
 DLLSYMBOL int (__stdcall *GRBcblazy)(void *, int, const int *, const double *, char, double);
 #define GRBemptyenv adaptor_GRBemptyenv
