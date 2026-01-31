@@ -175,6 +175,8 @@ DLLSYMBOL int (*mexPrintf)(const char*, ...);
 DLLSYMBOL void (*mexLock)(void);
 #define mexAtExit adaptor_mexAtExit
 DLLSYMBOL int (*mexAtExit)(void (*)(void));
+#define mexMakeArrayPersistent adaptor_mexMakeArrayPersistent
+DLLSYMBOL void (*mexMakeArrayPersistent)(mxArray *);
 #else
 int mxAddField(mxArray *, const char *);
 char* mxArrayToString(const mxArray *);
