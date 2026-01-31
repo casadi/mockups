@@ -207,6 +207,6 @@ void mexWarnMsgIdAndTxt(const char * a, const char * b, ...) {}
 int mexPrintf(const char* a, ...) { return 0; }
 void mexLock(void) {}
 int mexAtExit(void (* a)(void)) { return 0; }
-void mexMakeArrayPersistent(mxArray *) {}
+void mexMakeArrayPersistent(mxArray *a) {}
 
 #endif // _WIN32
