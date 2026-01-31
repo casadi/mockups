@@ -232,6 +232,7 @@ void mexWarnMsgIdAndTxt(const char *, const char *, ...);
 int mexPrintf(const char*, ...);
 void mexLock(void);
 int mexAtExit(void (*)(void));
+void mexMakeArrayPersistent(mxArray *);
 #endif // _WIN32
 
 #ifdef __cplusplus

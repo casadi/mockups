@@ -62,6 +62,7 @@ void (*mexWarnMsgIdAndTxt)(const char *, const char *, ...) = NULL;
 int (*mexPrintf)(const char*, ...) = NULL;
 void (*mexLock)(void) = NULL;
 int (*mexAtExit)(void (*)(void)) = NULL;
+void (*mexMakeArrayPersistent)(mxArray *) = NULL;
 
 BOOL APIENTRY DllMain( HMODULE hModule,
              DWORD  ul_reason_for_call,
@@ -135,6 +136,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             mexPrintf = (int (*)(const char*, ...)) GetProcAddress(h, "mexPrintf");
             mexLock = (void (*)(void)) GetProcAddress(h, "mexLock");
             mexAtExit = (int (*)(void (*)(void))) GetProcAddress(h, "mexAtExit");
+            mexMakeArrayPersistent = (void (*)(mxArray*))  GetProcAddress(h,"mexMakeArrayPersistent");
             return TRUE;
           }    
         }
@@ -205,5 +207,6 @@ void mexWarnMsgIdAndTxt(const char * a, const char * b, ...) {}
 int mexPrintf(const char* a, ...) { return 0; }
 void mexLock(void) {}
 int mexAtExit(void (* a)(void)) { return 0; }
+void mexMakeArrayPersistent(mxArray *) {}
 
 #endif // _WIN32
