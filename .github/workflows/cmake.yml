@@ -23,8 +23,8 @@ jobs:
           fetch-depth: 0 # for git-restore-mtime
       - name: Setup dockcross
         run: |
-          docker pull ghcr.io/jgillis/${{ matrix.arch }}:production
-          docker run --rm --env DEFAULT_DOCKCROSS_IMAGE=ghcr.io/jgillis/${{ matrix.arch }}:production  ghcr.io/jgillis/${{ matrix.arch }}:production > dockcross
+          docker pull dockcross/${{ matrix.arch }}
+          docker run --rm dockcross/${{ matrix.arch }} > dockcross
           chmod +x dockcross
       - name: Build
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
