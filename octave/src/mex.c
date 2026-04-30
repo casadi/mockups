@@ -40,6 +40,7 @@ double (*mxGetScalar)(const mxArray *) = NULL;
 int (*mxGetString)(const mxArray *, char *, mwSize) = NULL;
 bool (*mxIsCell)(const mxArray *) = NULL;
 bool (*mxIsChar)(const mxArray *) = NULL;
+bool (*mxIsClass)(const mxArray *, const char *) = NULL;
 bool (*mxIsComplex)(const mxArray *) = NULL;
 bool (*mxIsDouble)(const mxArray *) = NULL;
 bool (*mxIsLogical)(const mxArray *) = NULL;
@@ -114,6 +115,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             mxGetString = (int (*)(const mxArray *, char *, mwSize)) GetProcAddress(h, "mxGetString");
             mxIsCell = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsCell");
             mxIsChar = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsChar");
+            mxIsClass = (bool (*)(const mxArray *, const char *)) GetProcAddress(h, "mxIsClass");
             mxIsComplex = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsComplex");
             mxIsDouble = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsDouble");
             mxIsLogical = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsLogical");
@@ -136,7 +138,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             mexPrintf = (int (*)(const char*, ...)) GetProcAddress(h, "mexPrintf");
             mexLock = (void (*)(void)) GetProcAddress(h, "mexLock");
             mexAtExit = (int (*)(void (*)(void))) GetProcAddress(h, "mexAtExit");
-            mexMakeArrayPersistent = (void (*)(mxArray*))  GetProcAddress(h,"mexMakeArrayPersistent");
+            mexMakeArrayPersistent = (void (*)(mxArray *)) GetProcAddress(h, "mexMakeArrayPersistent");
             return TRUE;
           }    
         }
@@ -185,6 +187,7 @@ double mxGetScalar(const mxArray * a) { return 0; }
 int mxGetString(const mxArray * a, char * b, mwSize c) { return 0; }
 bool mxIsCell(const mxArray * a) { return 0; }
 bool mxIsChar(const mxArray * a) { return 0; }
+bool mxIsClass(const mxArray * a, const char * b) { return 0; }
 bool mxIsComplex(const mxArray * a) { return 0; }
 bool mxIsDouble(const mxArray * a) { return 0; }
 bool mxIsLogical(const mxArray * a) { return 0; }
@@ -207,6 +210,6 @@ void mexWarnMsgIdAndTxt(const char * a, const char * b, ...) {}
 int mexPrintf(const char* a, ...) { return 0; }
 void mexLock(void) {}
 int mexAtExit(void (* a)(void)) { return 0; }
-void mexMakeArrayPersistent(mxArray *a) {}
+void mexMakeArrayPersistent(mxArray * a) {}
 
 #endif // _WIN32

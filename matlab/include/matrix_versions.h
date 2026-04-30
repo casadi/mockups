@@ -81,6 +81,7 @@
 #define mxGetString mxGetString_800
 #define mxIsCell mxIsCell_800
 #define mxIsChar mxIsChar_800
+#define mxIsClass mxIsClass_800
 #define mxIsComplex mxIsComplex_800
 #define mxIsDouble mxIsDouble_800
 #define mxIsLogical mxIsLogical_800
