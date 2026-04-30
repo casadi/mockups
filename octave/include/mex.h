@@ -131,6 +131,8 @@ DLLSYMBOL int (*mxGetString)(const mxArray *, char *, mwSize);
 DLLSYMBOL bool (*mxIsCell)(const mxArray *);
 #define mxIsChar adaptor_mxIsChar
 DLLSYMBOL bool (*mxIsChar)(const mxArray *);
+#define mxIsClass adaptor_mxIsClass
+DLLSYMBOL bool (*mxIsClass)(const mxArray *, const char *);
 #define mxIsComplex adaptor_mxIsComplex
 DLLSYMBOL bool (*mxIsComplex)(const mxArray *);
 #define mxIsDouble adaptor_mxIsDouble
@@ -212,6 +214,7 @@ double mxGetScalar(const mxArray *);
 int mxGetString(const mxArray *, char *, mwSize);
 bool mxIsCell(const mxArray *);
 bool mxIsChar(const mxArray *);
+bool mxIsClass(const mxArray *, const char *);
 bool mxIsComplex(const mxArray *);
 bool mxIsDouble(const mxArray *);
 bool mxIsLogical(const mxArray *);

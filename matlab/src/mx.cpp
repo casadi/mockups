@@ -34,6 +34,7 @@ double mxGetScalar(const mxArray *) { return 0; }
 int mxGetString(const mxArray *, char *, mwSize) { return 0; }
 bool mxIsCell(const mxArray *) { return 0; }
 bool mxIsChar(const mxArray *) { return 0; }
+bool mxIsClass(const mxArray *, const char *) { return 0; }
 bool mxIsComplex(const mxArray *) { return 0; }
 bool mxIsDouble(const mxArray *) { return 0; }
 bool mxIsLogical(const mxArray *) { return 0; }

@@ -89,6 +89,7 @@ double mxGetScalar(const mxArray *);
 int mxGetString(const mxArray *, char *, mwSize);
 bool mxIsCell(const mxArray *);
 bool mxIsChar(const mxArray *);
+bool mxIsClass(const mxArray *, const char *);
 bool mxIsComplex(const mxArray *);
 bool mxIsDouble(const mxArray *);
 bool mxIsLogical(const mxArray *);
