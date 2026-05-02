@@ -21,6 +21,7 @@ typedef struct xo_prob_struct *XPRSprob;
 #define XPRS_MINUSINFINITY          (-1.0e+20)
 
 /* Integer attributes */
+#define XPRS_ROWS                      1001
 #define XPRS_SIMPLEXITER               1009
 #define XPRS_LPSTATUS                  1010
 #define XPRS_MIPSTATUS                 1011
@@ -76,6 +77,10 @@ int XPRScreateprob(XPRSprob*);
 int XPRSdestroyprob(XPRSprob);
 int XPRSloadqp(XPRSprob, const char*, int, int, const char[], const double[], const double[], const double[], const int[], const int[], const int[], const double[], const double[], const double[], int, const int[], const int[], const double[]);
 int XPRSchgcoltype(XPRSprob, int, const int[], const char[]);
+int XPRSaddsets(XPRSprob, int, int, const char[], const int[], const int[], const double[]);
+int XPRSaddcols(XPRSprob, int, int, const double[], const int[], const int[], const double[], const double[], const double[]);
+int XPRSaddrows(XPRSprob, int, int, const char[], const double[], const double[], const int[], const int[], const double[]);
+int XPRSaddqmatrix(XPRSprob, int, int, const int[], const int[], const double[]);
 int XPRSlpoptimize(XPRSprob, const char*);
 int XPRSmipoptimize(XPRSprob, const char*);
 int XPRSgetsolution(XPRSprob, int*, double[], int, int);
