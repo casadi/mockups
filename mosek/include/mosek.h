@@ -67,8 +67,97 @@ typedef void (*MSKstreamfunc)(MSKuserhandle_t, const char *);
 /* Stream type */
 #define MSK_STREAM_LOG                        0
 
-/* Function declarations: signatures match the real Mosek 11 API
- * (return type and parameter types only; parameter names are dummies). */
+#ifdef _WIN32
+
+/* On Windows, Mosek ships only versioned DLLs (e.g. mosek64_11_1.dll);
+ * there is no unversioned mosek64.dll to replace this stub at runtime.
+ * So on Windows the mockup is built as an adaptor: every MSK_* symbol
+ * is rewritten to a function pointer (adaptor_MSK_*) and resolved at
+ * runtime by mosek_adaptor_load(), which LoadLibrarys the versioned
+ * DLL based on the MOSEK_VERSION env var.
+ *
+ * The plugin gates its mosek_adaptor_load() call on #ifdef MOSEK_ADAPTOR
+ * so the same plugin source compiles on every platform. */
+
+#ifdef DLL_IMPLEMENTATION
+#define DLLSYMBOL __declspec(dllexport)
+#else
+#define DLLSYMBOL __declspec(dllimport) extern
+#endif
+
+#define MOSEK_ADAPTOR
+
+DLLSYMBOL int  mosek_adaptor_load(char* err_msg, unsigned int err_msg_len);
+DLLSYMBOL void mosek_adaptor_unload(void);
+
+#define MSK_makeenv adaptor_MSK_makeenv
+DLLSYMBOL MSKrescodee (*MSK_makeenv)(MSKenv_t *, const char *);
+#define MSK_deleteenv adaptor_MSK_deleteenv
+DLLSYMBOL MSKrescodee (*MSK_deleteenv)(MSKenv_t *);
+#define MSK_maketask adaptor_MSK_maketask
+DLLSYMBOL MSKrescodee (*MSK_maketask)(MSKenv_t, MSKint32t, MSKint32t, MSKtask_t *);
+#define MSK_deletetask adaptor_MSK_deletetask
+DLLSYMBOL MSKrescodee (*MSK_deletetask)(MSKtask_t *);
+
+#define MSK_appendvars adaptor_MSK_appendvars
+DLLSYMBOL MSKrescodee (*MSK_appendvars)(MSKtask_t, MSKint32t);
+#define MSK_appendcons adaptor_MSK_appendcons
+DLLSYMBOL MSKrescodee (*MSK_appendcons)(MSKtask_t, MSKint32t);
+#define MSK_putobjsense adaptor_MSK_putobjsense
+DLLSYMBOL MSKrescodee (*MSK_putobjsense)(MSKtask_t, MSKobjsensee);
+
+#define MSK_putcj adaptor_MSK_putcj
+DLLSYMBOL MSKrescodee (*MSK_putcj)(MSKtask_t, MSKint32t, MSKrealt);
+#define MSK_putvarbound adaptor_MSK_putvarbound
+DLLSYMBOL MSKrescodee (*MSK_putvarbound)(MSKtask_t, MSKint32t, MSKboundkeye, MSKrealt, MSKrealt);
+#define MSK_putconbound adaptor_MSK_putconbound
+DLLSYMBOL MSKrescodee (*MSK_putconbound)(MSKtask_t, MSKint32t, MSKboundkeye, MSKrealt, MSKrealt);
+#define MSK_putacol adaptor_MSK_putacol
+DLLSYMBOL MSKrescodee (*MSK_putacol)(MSKtask_t, MSKint32t, MSKint32t, const MSKint32t *, const MSKrealt *);
+#define MSK_putarow adaptor_MSK_putarow
+DLLSYMBOL MSKrescodee (*MSK_putarow)(MSKtask_t, MSKint32t, MSKint32t, const MSKint32t *, const MSKrealt *);
+#define MSK_putqobj adaptor_MSK_putqobj
+DLLSYMBOL MSKrescodee (*MSK_putqobj)(MSKtask_t, MSKint32t, const MSKint32t *, const MSKint32t *, const MSKrealt *);
+#define MSK_putvartype adaptor_MSK_putvartype
+DLLSYMBOL MSKrescodee (*MSK_putvartype)(MSKtask_t, MSKint32t, MSKvariabletypee);
+#define MSK_appendcone adaptor_MSK_appendcone
+DLLSYMBOL MSKrescodee (*MSK_appendcone)(MSKtask_t, MSKconetypee, MSKrealt, MSKint32t, const MSKint32t *);
+
+#define MSK_optimizetrm adaptor_MSK_optimizetrm
+DLLSYMBOL MSKrescodee (*MSK_optimizetrm)(MSKtask_t, MSKrescodee *);
+
+#define MSK_getsolsta adaptor_MSK_getsolsta
+DLLSYMBOL MSKrescodee (*MSK_getsolsta)(MSKtask_t, MSKsoltypee, MSKsolstae *);
+#define MSK_getprosta adaptor_MSK_getprosta
+DLLSYMBOL MSKrescodee (*MSK_getprosta)(MSKtask_t, MSKsoltypee, MSKprostae *);
+#define MSK_solutiondef adaptor_MSK_solutiondef
+DLLSYMBOL MSKrescodee (*MSK_solutiondef)(MSKtask_t, MSKsoltypee, MSKbooleant *);
+#define MSK_getxxslice adaptor_MSK_getxxslice
+DLLSYMBOL MSKrescodee (*MSK_getxxslice)(MSKtask_t, MSKsoltypee, MSKint32t, MSKint32t, MSKrealt *);
+#define MSK_getyslice adaptor_MSK_getyslice
+DLLSYMBOL MSKrescodee (*MSK_getyslice)(MSKtask_t, MSKsoltypee, MSKint32t, MSKint32t, MSKrealt *);
+#define MSK_getslxslice adaptor_MSK_getslxslice
+DLLSYMBOL MSKrescodee (*MSK_getslxslice)(MSKtask_t, MSKsoltypee, MSKint32t, MSKint32t, MSKrealt *);
+#define MSK_getsuxslice adaptor_MSK_getsuxslice
+DLLSYMBOL MSKrescodee (*MSK_getsuxslice)(MSKtask_t, MSKsoltypee, MSKint32t, MSKint32t, MSKrealt *);
+#define MSK_getprimalobj adaptor_MSK_getprimalobj
+DLLSYMBOL MSKrescodee (*MSK_getprimalobj)(MSKtask_t, MSKsoltypee, MSKrealt *);
+
+#define MSK_putnaintparam adaptor_MSK_putnaintparam
+DLLSYMBOL MSKrescodee (*MSK_putnaintparam)(MSKtask_t, const char *, MSKint32t);
+#define MSK_putnadouparam adaptor_MSK_putnadouparam
+DLLSYMBOL MSKrescodee (*MSK_putnadouparam)(MSKtask_t, const char *, MSKrealt);
+#define MSK_putnastrparam adaptor_MSK_putnastrparam
+DLLSYMBOL MSKrescodee (*MSK_putnastrparam)(MSKtask_t, const char *, const char *);
+
+#define MSK_linkfunctotaskstream adaptor_MSK_linkfunctotaskstream
+DLLSYMBOL MSKrescodee (*MSK_linkfunctotaskstream)(MSKtask_t, MSKstreamtypee, MSKuserhandle_t, MSKstreamfunc);
+
+#else  /* _WIN32 */
+
+/* Linux/Mac: real Mosek ships libmosek64.{so,dylib} under the
+ * unversioned name, so this mockup stays a plain link-time stub --
+ * the real library replaces it at runtime via the library path. */
 
 MSKrescodee MSK_makeenv  (MSKenv_t *, const char *);
 MSKrescodee MSK_deleteenv(MSKenv_t *);
@@ -104,6 +193,8 @@ MSKrescodee MSK_putnadouparam(MSKtask_t, const char *, MSKrealt);
 MSKrescodee MSK_putnastrparam(MSKtask_t, const char *, const char *);
 
 MSKrescodee MSK_linkfunctotaskstream(MSKtask_t, MSKstreamtypee, MSKuserhandle_t, MSKstreamfunc);
+
+#endif  /* _WIN32 */
 
 #ifdef __cplusplus
 }
