@@ -12,7 +12,18 @@ endif()
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_library(mosek64 SHARED src/mosek.c include/mosek.h)
+# On Windows, build as an adaptor DLL: at runtime mosek_adaptor_load()
+# LoadLibrarys the versioned mosek64_<MOSEK_VERSION>.dll, since Mosek
+# doesn't ship an unversioned Windows DLL.  On Linux/Mac the
+# unversioned libmosek64 stays a link-time stub that gets shadowed by
+# the real library on the loader path.
+if(WIN32)
+  set(LIBRARY_NAME mosek_adaptor)
+else()
+  set(LIBRARY_NAME mosek64)
+endif()
+
+add_library(${LIBRARY_NAME} SHARED src/mosek.c include/mosek.h)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
   set(NBITS_TWO "32")
@@ -31,13 +42,13 @@ elseif(${CMAKE_GENERATOR} MATCHES "MSYS Makefiles")
   set(RUNTIME_DIR bin/win${NBITS_TWO})
 endif()
 
-install(TARGETS mosek64 EXPORT mosekTargets
+install(TARGETS ${LIBRARY_NAME} EXPORT mosekTargets
   LIBRARY DESTINATION ${INSTALL_PREFIX}lib
   ARCHIVE DESTINATION ${INSTALL_PREFIX}${ARCHIVE_DIR}
   RUNTIME DESTINATION ${INSTALL_PREFIX}${RUNTIME_DIR}
   INCLUDES DESTINATION ${INSTALL_PREFIX}include)
 
-target_include_directories(mosek64 PUBLIC
+target_include_directories(${LIBRARY_NAME} PUBLIC
   $<BUILD_INTERFACE:${mosek_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${INSTALL_PREFIX}include>
 )
