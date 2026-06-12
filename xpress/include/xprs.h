@@ -19,6 +19,7 @@ typedef struct xo_prob_struct *XPRSprob;
 
 #define XPRS_PLUSINFINITY              1.0e+20
 #define XPRS_MINUSINFINITY          (-1.0e+20)
+#define XPRS_MAXMESSAGELENGTH           512
 
 /* Integer attributes */
 #define XPRS_ROWS                      1001
@@ -51,6 +52,11 @@ typedef struct xo_prob_struct *XPRSprob;
 #define XPRS_MIP_INFEAS                 5
 #define XPRS_MIP_OPTIMAL                6
 #define XPRS_MIP_UNBOUNDED              7
+
+/* Solution availability (XPRSgetsolution/XPRSgetduals/XPRSgetredcosts status) */
+#define XPRS_SOLAVAILABLE_NOTFOUND      0
+#define XPRS_SOLAVAILABLE_OPTIMAL       1
+#define XPRS_SOLAVAILABLE_FEASIBLE      2
 
 /* Objective sense */
 #define XPRS_OBJ_MINIMIZE               1
@@ -93,6 +99,12 @@ int XPRSsetintcontrol64(XPRSprob, int, XPRSint64);
 int XPRSsetdblcontrol(XPRSprob, int, double);
 int XPRSsetstrcontrol(XPRSprob, int, const char*);
 int XPRSgetcontrolinfo(XPRSprob, const char*, int*, int*);
+int XPRSgetlasterror(XPRSprob, char*);
+int XPRSsetlogfile(XPRSprob, const char*);
+int XPRSpostsolve(XPRSprob);
+int XPRSaddmipsol(XPRSprob, int, const double[], const int[], const char*);
+int XPRSiisfirst(XPRSprob, int, int*);
+int XPRSgetiisdata(XPRSprob, int, int*, int*, int[], int[], char[], char[], double[], double[], char[], char[]);
 
 #ifdef __cplusplus
 }

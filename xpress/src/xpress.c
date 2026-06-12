@@ -25,3 +25,14 @@ int XPRSsetintcontrol64(XPRSprob a, int b, XPRSint64 c) { (void)a; (void)b; (voi
 int XPRSsetdblcontrol(XPRSprob a, int b, double c) { (void)a; (void)b; (void)c; return 0; }
 int XPRSsetstrcontrol(XPRSprob a, int b, const char *c) { (void)a; (void)b; (void)c; return 0; }
 int XPRSgetcontrolinfo(XPRSprob a, const char *b, int *c, int *d) { (void)a; (void)b; (void)c; (void)d; return 0; }
+int XPRSgetlasterror(XPRSprob a, char *b) { (void)a; if (b) b[0] = '\0'; return 0; }
+int XPRSsetlogfile(XPRSprob a, const char *b) { (void)a; (void)b; return 0; }
+int XPRSpostsolve(XPRSprob a) { (void)a; return 0; }
+int XPRSaddmipsol(XPRSprob a, int b, const double c[], const int d[], const char *e) { (void)a; (void)b; (void)c; (void)d; (void)e; return 0; }
+int XPRSiisfirst(XPRSprob a, int b, int *c) { (void)a; (void)b; if (c) *c = 1; return 0; }
+int XPRSgetiisdata(XPRSprob a, int b, int *c, int *d, int e[], int f[], char g[], char h[], double i[], double j[], char k[], char l[]) {
+  (void)a; (void)b; (void)e; (void)f; (void)g; (void)h; (void)i; (void)j; (void)k; (void)l;
+  if (c) *c = 0;
+  if (d) *d = 0;
+  return 0;
+}
