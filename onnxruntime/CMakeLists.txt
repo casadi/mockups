@@ -14,6 +14,13 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 add_library(onnxruntime SHARED src/onnxruntime.c include/onnxruntime_c_api.h)
 
+# Linux: match real ONNX Runtime's soname (libonnxruntime.so.1) so a plugin built against
+# this stub reuses an already-loaded real libonnxruntime (e.g. from the pip `onnxruntime`
+# package) in-process; falls back to the stub (NULL OrtApi) when none is present.
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set_target_properties(onnxruntime PROPERTIES VERSION 1.22.0 SOVERSION 1)
+endif()
+
 target_include_directories(onnxruntime PUBLIC
   $<BUILD_INTERFACE:${onnxruntime_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${INSTALL_PREFIX}include>
