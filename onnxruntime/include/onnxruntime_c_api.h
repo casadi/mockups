@@ -1,13 +1,15 @@
-// Cherry-picked subset of ONNX Runtime's onnxruntime_c_api.h.
+// ABI-faithful trim of ONNX Runtime's onnxruntime_c_api.h (v1.22.0).
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 //
-// Contains only the surface CasADi's onnxruntime plugin actually uses (the
-// OrtApiBase ABI anchor + the 14 OrtApi members it calls), transcribed
-// verbatim from onnxruntime v1.22.0. The mockup's libonnxruntime returns a
-// NULL OrtApi, so this is a build-time interface only -- the struct is never
-// dereferenced at runtime.
+// CasADi's plugin builds against this header but at test time runs against the REAL
+// libonnxruntime, so OrtApi must be ABI-compatible. OrtApi is dispatched by struct
+// offset, so we keep the real member ORDER up to the deepest member the plugin uses
+// (index 100) -- used members carry real signatures, the rest are void* filler -- and
+// truncate the remaining 217. ORT only ever appends members (see the increasing
+// "\since Version" tags upstream), so this 1.22 layout stays valid against any newer
+// real library. Verified: offsetof matches the upstream header for all used members.
 
 #ifndef CASADI_MOCKUP_ONNXRUNTIME_C_API_H
 #define CASADI_MOCKUP_ONNXRUNTIME_C_API_H
@@ -124,41 +126,60 @@ typedef struct OrtApiBase OrtApiBase;
 
 ORT_EXPORT const OrtApiBase* ORT_API_CALL OrtGetApiBase(void) NO_EXCEPTION;
 
-// Only the members CasADi's onnxruntime plugin references. Member order is
-// irrelevant here: members are accessed by name and the table is never
-// instantiated by the mockup (GetApi returns NULL).
+// ABI-faithful trim of OrtApi (onnxruntime v1.22.0, ORT_API_VERSION 22). OrtApi is
+// dispatched by struct offset, so a plugin built against this and run against the real
+// library (the test-time scenario) must see every member at its real index. We therefore
+// keep the exact real member ORDER up to the deepest member the plugin uses
+// (ReleaseSessionOptions, index 100) and truncate the remaining 217. Members the plugin
+// does not call are pointer-sized `void*` filler (a `[N]` run == N function-pointer slots);
+// only the 14 used members carry real signatures. Indices in comments are the real offsets.
 struct OrtApi {
-  const char*(ORT_API_CALL* GetErrorMessage)(_In_ const OrtStatus* status)NO_EXCEPTION ORT_ALL_ARGS_NONNULL;
+  void* _gap0[2];  // 0 CreateStatus, 1 GetErrorCode
 
-  ORT_API2_STATUS(CreateEnv, OrtLoggingLevel log_severity_level, _In_ const char* logid, _Outptr_ OrtEnv** out);
+  const char*(ORT_API_CALL* GetErrorMessage)(_In_ const OrtStatus* status)NO_EXCEPTION ORT_ALL_ARGS_NONNULL;  // 2
+
+  ORT_API2_STATUS(CreateEnv, OrtLoggingLevel log_severity_level, _In_ const char* logid, _Outptr_ OrtEnv** out);  // 3
+
+  void* _gap1[4];  // 4..7
 
   ORT_API2_STATUS(CreateSessionFromArray, _In_ const OrtEnv* env,
                   _In_ const void* model_data, size_t model_data_length,
-                  _In_ const OrtSessionOptions* options, _Outptr_ OrtSession** out);
+                  _In_ const OrtSessionOptions* options, _Outptr_ OrtSession** out);  // 8
 
   ORT_API2_STATUS(Run, _Inout_ OrtSession* session, _In_opt_ const OrtRunOptions* run_options,
                   _In_reads_(input_len) const char* const* input_names,
                   _In_reads_(input_len) const OrtValue* const* inputs, size_t input_len,
                   _In_reads_(output_names_len) const char* const* output_names, size_t output_names_len,
-                  _Inout_updates_all_(output_names_len) OrtValue** outputs);
+                  _Inout_updates_all_(output_names_len) OrtValue** outputs);  // 9
 
-  ORT_API2_STATUS(CreateSessionOptions, _Outptr_ OrtSessionOptions** options);
+  ORT_API2_STATUS(CreateSessionOptions, _Outptr_ OrtSessionOptions** options);  // 10
 
-  ORT_API2_STATUS(CreateCpuMemoryInfo, enum OrtAllocatorType type, enum OrtMemType mem_type,
-                  _Outptr_ OrtMemoryInfo** out);
+  void* _gap2[38];  // 11..48
 
   ORT_API2_STATUS(CreateTensorWithDataAsOrtValue, _In_ const OrtMemoryInfo* info, _Inout_ void* p_data,
                   size_t p_data_len, _In_ const int64_t* shape, size_t shape_len, ONNXTensorElementDataType type,
-                  _Outptr_ OrtValue** out);
+                  _Outptr_ OrtValue** out);  // 49
 
-  ORT_API2_STATUS(GetTensorMutableData, _In_ OrtValue* value, _Outptr_ void** out);
+  void* _gap3[1];  // 50
 
-  ORT_CLASS_RELEASE(Env);
-  ORT_CLASS_RELEASE(Status);
-  ORT_CLASS_RELEASE(MemoryInfo);
-  ORT_CLASS_RELEASE(Session);
-  ORT_CLASS_RELEASE(Value);
-  ORT_CLASS_RELEASE(SessionOptions);
+  ORT_API2_STATUS(GetTensorMutableData, _In_ OrtValue* value, _Outptr_ void** out);  // 51
+
+  void* _gap4[17];  // 52..68
+
+  ORT_API2_STATUS(CreateCpuMemoryInfo, enum OrtAllocatorType type, enum OrtMemType mem_type,
+                  _Outptr_ OrtMemoryInfo** out);  // 69
+
+  void* _gap5[22];  // 70..91
+
+  ORT_CLASS_RELEASE(Env);          // 92
+  ORT_CLASS_RELEASE(Status);       // 93
+  ORT_CLASS_RELEASE(MemoryInfo);   // 94
+  ORT_CLASS_RELEASE(Session);      // 95
+  ORT_CLASS_RELEASE(Value);        // 96
+
+  void* _gap6[3];  // 97..99
+
+  ORT_CLASS_RELEASE(SessionOptions);  // 100
 };
 typedef struct OrtApi OrtApi;
 
