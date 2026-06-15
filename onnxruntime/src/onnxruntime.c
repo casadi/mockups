@@ -6,21 +6,12 @@
  * from libonnxruntime -- OrtGetApiBase -- and reaches everything else through
  * the returned OrtApi function-pointer table.
  *
- * OrtApiBase / OrtGetApiBase is ONNX Runtime's stable, versioned ABI anchor,
- * so only that tiny entry point is declared here (no copy of the full
- * onnxruntime_c_api.h needed). GetApi() returns NULL, so any attempt to
- * actually use the runtime surfaces as a clean CasADi error ("Failed to obtain
- * the ONNX Runtime API") rather than running a fake model.
+ * GetApi() returns NULL, so any attempt to actually use the runtime surfaces
+ * as a clean CasADi error ("Failed to obtain the ONNX Runtime API") rather
+ * than running a fake model.
  */
 
-#include <stdint.h>
-
-struct OrtApi;  /* opaque: the mockup never produces a real API table */
-
-typedef struct OrtApiBase {
-  const struct OrtApi* (*GetApi)(uint32_t version);
-  const char* (*GetVersionString)(void);
-} OrtApiBase;
+#include <onnxruntime_c_api.h>
 
 #if defined(_WIN32)
 #define ORT_MOCKUP_EXPORT __declspec(dllexport)
@@ -28,12 +19,12 @@ typedef struct OrtApiBase {
 #define ORT_MOCKUP_EXPORT __attribute__((visibility("default")))
 #endif
 
-static const struct OrtApi* mockup_GetApi(uint32_t version) {
+static const struct OrtApi* ORT_API_CALL mockup_GetApi(uint32_t version) {
   (void) version;
   return 0;
 }
 
-static const char* mockup_GetVersionString(void) {
+static const char* ORT_API_CALL mockup_GetVersionString(void) {
   return "mockup";
 }
 

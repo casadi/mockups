@@ -12,7 +12,14 @@ endif()
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_library(onnxruntime SHARED src/onnxruntime.c)
+add_library(onnxruntime SHARED src/onnxruntime.c include/onnxruntime_c_api.h)
+
+target_include_directories(onnxruntime PUBLIC
+  $<BUILD_INTERFACE:${onnxruntime_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:${INSTALL_PREFIX}include>
+)
+
+install(DIRECTORY include/ DESTINATION ${INSTALL_PREFIX}include)
 
 install(TARGETS onnxruntime EXPORT onnxruntimeTargets
   LIBRARY DESTINATION ${INSTALL_PREFIX}lib
