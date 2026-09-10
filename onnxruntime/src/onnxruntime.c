@@ -8,9 +8,11 @@
  * otherwise win) and no ONNX Runtime has to be present at link time.
  *
  * ONNX Runtime distributions disagree on file name and layout (MS releases, pip,
- * conda, GPU variants), so there is no search: CASADI_ONNXRUNTIME_LIB must hold the
- * full path of the library. Until it loads, GetApi() returns NULL and the caller
- * surfaces a clean error rather than running a fake model.
+ * conda, GPU variants), so there is no search. CASADI_ONNXRUNTIME_LIB holds either
+ * the full path of the library, or -- with no path separator in it -- the module name
+ * of an ONNX Runtime the host process has ALREADY loaded, which is then reused as-is.
+ * Neither form ever searches by name. Until a runtime loads, GetApi() returns NULL and
+ * the caller surfaces a clean error rather than running a fake model.
  */
 
 #define DLL_IMPLEMENTATION
@@ -34,6 +36,18 @@ static void* h = NULL;
 #endif
 
 static const OrtApiBase* (ORT_API_CALL *real_OrtGetApiBase)(void) = NULL;
+
+/* A name with no path separator means "the module this process already has". */
+static int bare_name(const char* s) {
+  for (; *s; ++s) {
+    #if defined(_WIN32)
+    if (*s == '/' || *s == '\\' || *s == ':') return 0;
+    #else
+    if (*s == '/') return 0;
+    #endif
+  }
+  return 1;
+}
 
 ORT_ADAPTOR_EXPORT void onnxruntime_adaptor_unload(void) {
   real_OrtGetApiBase = NULL;
@@ -65,14 +79,13 @@ ORT_ADAPTOR_EXPORT int onnxruntime_adaptor_load(char* err_msg, unsigned int err_
   if (lib == NULL || lib[0] == '\0') {
     snprintf(err_msg, err_msg_len, "The ONNX Runtime adaptor needs an environmental variable "
       "<CASADI_ONNXRUNTIME_LIB> holding the full path of an ONNX Runtime shared library, "
-      "e.g. \"%s\".", example);
+      "e.g. \"%s\" -- or, with no path separator, the module name of one this process "
+      "has already loaded.", example);
     return 1;
   }
 
   #if defined(_WIN32)
   {
-    /* Full path only: the search flags cover the dependencies the runtime pulls in
-       (its own directory first), not the runtime itself. */
     int n = MultiByteToWideChar(CP_UTF8, 0, lib, -1, NULL, 0);
     wchar_t* libW = n > 0 ? (wchar_t*) malloc(sizeof(wchar_t) * (size_t) n) : NULL;
     if (libW == NULL) {
@@ -80,21 +93,43 @@ ORT_ADAPTOR_EXPORT int onnxruntime_adaptor_load(char* err_msg, unsigned int err_
       return 1;
     }
     MultiByteToWideChar(CP_UTF8, 0, lib, -1, libW, n);
-    h = LoadLibraryExW(libW, NULL,
-      LOAD_LIBRARY_SEARCH_USER_DIRS |
-      LOAD_LIBRARY_SEARCH_DEFAULT_DIRS |
-      LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
+    if (bare_name(lib)) {
+      /* Reuse a module the host already loaded, by base name; never a search, so
+         C:\Windows\System32\onnxruntime.dll cannot slip in behind our back. */
+      if (!GetModuleHandleExW(0, libW, &h)) h = NULL;
+    } else {
+      /* The search flags cover the dependencies the runtime pulls in (its own directory
+         first), not the runtime itself -- which is why the path must be fully qualified. */
+      h = LoadLibraryExW(libW, NULL,
+        LOAD_LIBRARY_SEARCH_USER_DIRS |
+        LOAD_LIBRARY_SEARCH_DEFAULT_DIRS |
+        LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
+    }
     free(libW);
     if (h == NULL) {
-      snprintf(err_msg, err_msg_len, "Could not load ONNX Runtime '%s' (error %lu).",
-        lib, (unsigned long) GetLastError());
+      DWORD e = GetLastError();
+      if (bare_name(lib)) {
+        snprintf(err_msg, err_msg_len, "No module '%s' is loaded in this process; load an "
+          "ONNX Runtime first, or give CASADI_ONNXRUNTIME_LIB a full path.", lib);
+      } else {
+        snprintf(err_msg, err_msg_len, "Could not load ONNX Runtime '%s' (error %lu)%s.",
+          lib, (unsigned long) e,
+          e == ERROR_INVALID_PARAMETER ? "; the path must be fully qualified" : "");
+      }
       return 1;
     }
   }
   #else
-  h = dlopen(lib, RTLD_LAZY | RTLD_LOCAL);
+  /* RTLD_NOLOAD resolves a bare name against the already-loaded objects only (glibc
+     matches it against their DT_SONAME); it never falls back to a filesystem search. */
+  h = dlopen(lib, RTLD_LAZY | RTLD_LOCAL | (bare_name(lib) ? RTLD_NOLOAD : 0));
   if (h == NULL) {
-    snprintf(err_msg, err_msg_len, "Could not load ONNX Runtime '%s' (%s).", lib, dlerror());
+    if (bare_name(lib)) {
+      snprintf(err_msg, err_msg_len, "No library '%s' is loaded in this process; load an "
+        "ONNX Runtime first, or give CASADI_ONNXRUNTIME_LIB a full path.", lib);
+    } else {
+      snprintf(err_msg, err_msg_len, "Could not load ONNX Runtime '%s' (%s).", lib, dlerror());
+    }
     return 1;
   }
   #endif
