@@ -12,27 +12,35 @@ endif()
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_library(onnxruntime SHARED src/onnxruntime.c include/onnxruntime_c_api.h)
+set(LIBRARY_NAME onnxruntime_adaptor)
 
-# Windows: real ONNX Runtime ships onnxruntime.dll, so drop the "lib" prefix (cf. knitro)
+add_library(${LIBRARY_NAME} SHARED src/onnxruntime.c include/onnxruntime_c_api.h)
+
 if(WIN32)
-  set_target_properties(onnxruntime PROPERTIES PREFIX "" IMPORT_PREFIX "")
+  set_target_properties(${LIBRARY_NAME} PROPERTIES PREFIX "lib" IMPORT_PREFIX "lib")
 endif()
 
-# Linux: match real ONNX Runtime's soname (libonnxruntime.so.1) so a plugin linked against
-# this stub binds a real libonnxruntime when one is on the loader path
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set_target_properties(onnxruntime PROPERTIES VERSION 1.22.0 SOVERSION 1)
+if(NOT WIN32)
+  target_link_libraries(${LIBRARY_NAME} PRIVATE ${CMAKE_DL_LIBS})
 endif()
 
-target_include_directories(onnxruntime PUBLIC
+target_include_directories(${LIBRARY_NAME} PUBLIC
+  $<BUILD_INTERFACE:${onnxruntime_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:${INSTALL_PREFIX}include>
+)
+
+add_library(onnxruntime INTERFACE)
+
+target_link_libraries(onnxruntime INTERFACE ${LIBRARY_NAME})
+
+target_include_directories(onnxruntime INTERFACE
   $<BUILD_INTERFACE:${onnxruntime_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${INSTALL_PREFIX}include>
 )
 
 install(DIRECTORY include/ DESTINATION ${INSTALL_PREFIX}include)
 
-install(TARGETS onnxruntime EXPORT onnxruntimeTargets
+install(TARGETS ${LIBRARY_NAME} onnxruntime EXPORT onnxruntimeTargets
   LIBRARY DESTINATION ${INSTALL_PREFIX}lib
   ARCHIVE DESTINATION ${INSTALL_PREFIX}lib
   RUNTIME DESTINATION ${INSTALL_PREFIX}bin

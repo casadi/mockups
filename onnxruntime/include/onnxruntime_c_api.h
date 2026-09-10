@@ -3,9 +3,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 //
-// CasADi's plugin builds against this header but at test time runs against the REAL
-// libonnxruntime, so OrtApi must be ABI-compatible. OrtApi is dispatched by struct
-// offset, so we keep the real member ORDER up to the deepest member the plugin uses
+// CasADi's plugin builds against this header but runs against the REAL libonnxruntime
+// (reached through the adaptor below), so OrtApi must be ABI-compatible. OrtApi is
+// dispatched by struct offset, so we keep the real member ORDER up to the deepest one used
 // (index 100) -- used members carry real signatures, the rest are void* filler -- and
 // truncate the remaining 217. ORT only ever appends members (see the increasing
 // "\since Version" tags upstream), so this 1.22 layout stays valid against any newer
@@ -125,6 +125,28 @@ struct OrtApiBase {
 typedef struct OrtApiBase OrtApiBase;
 
 ORT_EXPORT const OrtApiBase* ORT_API_CALL OrtGetApiBase(void) NO_EXCEPTION;
+
+// This header comes with an adaptor library rather than a real ONNX Runtime: OrtGetApiBase
+// forwards to the runtime named by the CASADI_ONNXRUNTIME_LIB environment variable, opened
+// on first use. Call onnxruntime_adaptor_load() to force that load and get a diagnostic.
+#define ONNXRUNTIME_ADAPTOR
+
+#ifdef _WIN32
+    #ifdef DLL_IMPLEMENTATION
+    #define ORT_ADAPTOR_SYMBOL __declspec( dllexport )
+    #else
+    #define ORT_ADAPTOR_SYMBOL __declspec( dllimport ) extern
+    #endif
+#else
+    #ifdef DLL_IMPLEMENTATION
+    #define ORT_ADAPTOR_SYMBOL
+    #else
+    #define ORT_ADAPTOR_SYMBOL extern
+    #endif
+#endif
+
+ORT_ADAPTOR_SYMBOL int onnxruntime_adaptor_load(char* err_msg, unsigned int err_msg_len);
+ORT_ADAPTOR_SYMBOL void onnxruntime_adaptor_unload(void);
 
 // ABI-faithful trim of OrtApi (onnxruntime v1.22.0, ORT_API_VERSION 22). OrtApi is
 // dispatched by struct offset, so a plugin built against this and run against the real
