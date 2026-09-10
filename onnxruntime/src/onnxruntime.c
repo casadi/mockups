@@ -29,12 +29,6 @@ static HMODULE h = NULL;
 static void* h = NULL;
 #endif
 
-#if defined(_WIN32)
-#define ORT_ADAPTOR_EXPORT __declspec(dllexport)
-#else
-#define ORT_ADAPTOR_EXPORT __attribute__((visibility("default")))
-#endif
-
 static const OrtApiBase* (ORT_API_CALL *real_OrtGetApiBase)(void) = NULL;
 
 /* A name with no path separator means "the module this process already has". */
@@ -49,7 +43,7 @@ static int bare_name(const char* s) {
   return 1;
 }
 
-ORT_ADAPTOR_EXPORT void onnxruntime_adaptor_unload(void) {
+ORT_ADAPTOR_SYMBOL void onnxruntime_adaptor_unload(void) {
   real_OrtGetApiBase = NULL;
   if (h) {
     #if defined(_WIN32)
@@ -61,7 +55,7 @@ ORT_ADAPTOR_EXPORT void onnxruntime_adaptor_unload(void) {
   }
 }
 
-ORT_ADAPTOR_EXPORT int onnxruntime_adaptor_load(char* err_msg, unsigned int err_msg_len) {
+ORT_ADAPTOR_SYMBOL int onnxruntime_adaptor_load(char* err_msg, unsigned int err_msg_len) {
   const OrtApiBase* base;
   const char* lib;
 
@@ -170,7 +164,7 @@ static const char* ORT_API_CALL unavailable_GetVersionString(void) {
   return "unavailable";
 }
 
-ORT_ADAPTOR_EXPORT const OrtApiBase* ORT_API_CALL OrtGetApiBase(void) {
+ORT_ADAPTOR_SYMBOL const OrtApiBase* ORT_API_CALL OrtGetApiBase(void) {
   static const OrtApiBase unavailable = { unavailable_GetApi, unavailable_GetVersionString };
   if (real_OrtGetApiBase == NULL) {
     char err_msg[512];

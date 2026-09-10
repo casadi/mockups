@@ -17,7 +17,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-// SAL annotations: no-ops, matching the upstream non-MSVC path
+// SAL annotations: no-ops, matching the upstream non-MSVC path. MSVC has the real
+// ones in sal.h, so define only what is missing.
+#ifndef _In_
 #define _In_
 #define _In_z_
 #define _In_opt_
@@ -29,6 +31,7 @@
 #define _Frees_ptr_opt_
 #define _Check_return_
 #define _Ret_maybenull_
+#endif
 #define ORT_ALL_ARGS_NONNULL
 #define ORT_MUST_USE_RESULT
 
@@ -124,8 +127,6 @@ struct OrtApiBase {
 };
 typedef struct OrtApiBase OrtApiBase;
 
-ORT_EXPORT const OrtApiBase* ORT_API_CALL OrtGetApiBase(void) NO_EXCEPTION;
-
 // This header comes with an adaptor library rather than a real ONNX Runtime: OrtGetApiBase
 // forwards to the runtime named by the CASADI_ONNXRUNTIME_LIB environment variable, opened
 // on first use. Call onnxruntime_adaptor_load() to force that load and get a diagnostic.
@@ -139,11 +140,15 @@ ORT_EXPORT const OrtApiBase* ORT_API_CALL OrtGetApiBase(void) NO_EXCEPTION;
     #endif
 #else
     #ifdef DLL_IMPLEMENTATION
-    #define ORT_ADAPTOR_SYMBOL
+    #define ORT_ADAPTOR_SYMBOL __attribute__((visibility("default")))
     #else
     #define ORT_ADAPTOR_SYMBOL extern
     #endif
 #endif
+
+// Declared with the adaptor's linkage, not upstream's bare ORT_EXPORT: MSVC rejects a
+// dllexport definition of a plainly-declared function (C2375).
+ORT_ADAPTOR_SYMBOL const OrtApiBase* ORT_API_CALL OrtGetApiBase(void) NO_EXCEPTION;
 
 ORT_ADAPTOR_SYMBOL int onnxruntime_adaptor_load(char* err_msg, unsigned int err_msg_len);
 ORT_ADAPTOR_SYMBOL void onnxruntime_adaptor_unload(void);
