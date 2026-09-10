@@ -17,21 +17,30 @@
 #include <stdint.h>
 #include <stddef.h>
 
-// SAL annotations: no-ops, matching the upstream non-MSVC path. MSVC has the real
-// ones in sal.h, so define only what is missing.
-#ifndef _In_
+// SAL annotations: no-ops, matching the upstream non-MSVC path. Undefined first because
+// MSVC pulls in the real sal.h behind our back (C4005); this header stays self-contained.
+#undef _In_
 #define _In_
+#undef _In_z_
 #define _In_z_
+#undef _In_opt_
 #define _In_opt_
+#undef _Inout_
 #define _Inout_
+#undef _Out_
 #define _Out_
+#undef _Outptr_
 #define _Outptr_
+#undef _In_reads_
 #define _In_reads_(X)
+#undef _Inout_updates_all_
 #define _Inout_updates_all_(X)
+#undef _Frees_ptr_opt_
 #define _Frees_ptr_opt_
+#undef _Check_return_
 #define _Check_return_
+#undef _Ret_maybenull_
 #define _Ret_maybenull_
-#endif
 #define ORT_ALL_ARGS_NONNULL
 #define ORT_MUST_USE_RESULT
 
