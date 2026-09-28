@@ -37,12 +37,14 @@ bool mxIsChar(const mxArray *) { return 0; }
 bool mxIsClass(const mxArray *, const char *) { return 0; }
 bool mxIsComplex(const mxArray *) { return 0; }
 bool mxIsDouble(const mxArray *) { return 0; }
+bool mxIsInt8(const mxArray *) { return 0; }
 bool mxIsLogical(const mxArray *) { return 0; }
 bool mxIsLogicalScalar(const mxArray *) { return 0; }
 bool mxIsLogicalScalarTrue(const mxArray *) { return 0; }
 bool mxIsNumeric(const mxArray *) { return 0; }
 bool mxIsSparse(const mxArray *) { return 0; }
 bool mxIsStruct(const mxArray *) { return 0; }
+bool mxIsUint8(const mxArray *) { return 0; }
 void mxSetCell(mxArray *, mwIndex, mxArray *) { }
 void mxSetField(mxArray *, mwIndex, const char *, mxArray *) { }
 void mxSetProperty(mxArray *, mwIndex, const char *, const mxArray *) { }

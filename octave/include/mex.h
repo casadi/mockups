@@ -137,6 +137,8 @@ DLLSYMBOL bool (*mxIsClass)(const mxArray *, const char *);
 DLLSYMBOL bool (*mxIsComplex)(const mxArray *);
 #define mxIsDouble adaptor_mxIsDouble
 DLLSYMBOL bool (*mxIsDouble)(const mxArray *);
+#define mxIsInt8 adaptor_mxIsInt8
+DLLSYMBOL bool (*mxIsInt8)(const mxArray *);
 #define mxIsLogical adaptor_mxIsLogical
 DLLSYMBOL bool (*mxIsLogical)(const mxArray *);
 #define mxIsLogicalScalar adaptor_mxIsLogicalScalar
@@ -149,6 +151,8 @@ DLLSYMBOL bool (*mxIsNumeric)(const mxArray *);
 DLLSYMBOL bool (*mxIsSparse)(const mxArray *);
 #define mxIsStruct adaptor_mxIsStruct
 DLLSYMBOL bool (*mxIsStruct)(const mxArray *);
+#define mxIsUint8 adaptor_mxIsUint8
+DLLSYMBOL bool (*mxIsUint8)(const mxArray *);
 #define mxSetCell adaptor_mxSetCell
 DLLSYMBOL void (*mxSetCell)(mxArray *, mwIndex, mxArray *);
 #define mxSetField adaptor_mxSetField
@@ -217,12 +221,14 @@ bool mxIsChar(const mxArray *);
 bool mxIsClass(const mxArray *, const char *);
 bool mxIsComplex(const mxArray *);
 bool mxIsDouble(const mxArray *);
+bool mxIsInt8(const mxArray *);
 bool mxIsLogical(const mxArray *);
 bool mxIsLogicalScalar(const mxArray *);
 bool mxIsLogicalScalarTrue(const mxArray *);
 bool mxIsNumeric(const mxArray *);
 bool mxIsSparse(const mxArray *);
 bool mxIsStruct(const mxArray *);
+bool mxIsUint8(const mxArray *);
 void mxSetCell(mxArray *, mwIndex, mxArray *);
 void mxSetField(mxArray *, mwIndex, const char *, mxArray *);
 void mxSetProperty(mxArray *, mwIndex, const char *, const mxArray *);

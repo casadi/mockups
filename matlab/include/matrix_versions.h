@@ -84,12 +84,14 @@
 #define mxIsClass mxIsClass_800
 #define mxIsComplex mxIsComplex_800
 #define mxIsDouble mxIsDouble_800
+#define mxIsInt8 mxIsInt8_800
 #define mxIsLogical mxIsLogical_800
 #define mxIsLogicalScalar mxIsLogicalScalar_800
 #define mxIsLogicalScalarTrue mxIsLogicalScalarTrue_800
 #define mxIsNumeric mxIsNumeric_800
 #define mxIsSparse mxIsSparse_800
 #define mxIsStruct mxIsStruct_800
+#define mxIsUint8 mxIsUint8_800
 #define mxSetCell mxSetCell_800
 #define mxSetField mxSetField_800
 #define mxSetProperty mxSetProperty_800

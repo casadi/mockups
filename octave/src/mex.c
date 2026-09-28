@@ -43,12 +43,14 @@ bool (*mxIsChar)(const mxArray *) = NULL;
 bool (*mxIsClass)(const mxArray *, const char *) = NULL;
 bool (*mxIsComplex)(const mxArray *) = NULL;
 bool (*mxIsDouble)(const mxArray *) = NULL;
+bool (*mxIsInt8)(const mxArray *) = NULL;
 bool (*mxIsLogical)(const mxArray *) = NULL;
 bool (*mxIsLogicalScalar)(const mxArray *) = NULL;
 bool (*mxIsLogicalScalarTrue)(const mxArray *) = NULL;
 bool (*mxIsNumeric)(const mxArray *) = NULL;
 bool (*mxIsSparse)(const mxArray *) = NULL;
 bool (*mxIsStruct)(const mxArray *) = NULL;
+bool (*mxIsUint8)(const mxArray *) = NULL;
 void (*mxSetCell)(mxArray *, mwIndex, mxArray *) = NULL;
 void (*mxSetField)(mxArray *, mwIndex, const char *, mxArray *) = NULL;
 void (*mxSetProperty)(mxArray *, mwIndex, const char *, const mxArray *) = NULL;
@@ -118,12 +120,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             mxIsClass = (bool (*)(const mxArray *, const char *)) GetProcAddress(h, "mxIsClass");
             mxIsComplex = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsComplex");
             mxIsDouble = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsDouble");
+            mxIsInt8 = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsInt8");
             mxIsLogical = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsLogical");
             mxIsLogicalScalar = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsLogicalScalar");
             mxIsLogicalScalarTrue = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsLogicalScalarTrue");
             mxIsNumeric = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsNumeric");
             mxIsSparse = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsSparse");
             mxIsStruct = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsStruct");
+            mxIsUint8 = (bool (*)(const mxArray *)) GetProcAddress(h, "mxIsUint8");
             mxSetCell = (void (*)(mxArray *, mwIndex, mxArray *)) GetProcAddress(h, "mxSetCell");
             mxSetField = (void (*)(mxArray *, mwIndex, const char *, mxArray *)) GetProcAddress(h, "mxSetField");
             mxSetProperty = (void (*)(mxArray *, mwIndex, const char *, const mxArray *)) GetProcAddress(h, "mxSetProperty");
@@ -190,12 +194,14 @@ bool mxIsChar(const mxArray * a) { return 0; }
 bool mxIsClass(const mxArray * a, const char * b) { return 0; }
 bool mxIsComplex(const mxArray * a) { return 0; }
 bool mxIsDouble(const mxArray * a) { return 0; }
+bool mxIsInt8(const mxArray * a) { return 0; }
 bool mxIsLogical(const mxArray * a) { return 0; }
 bool mxIsLogicalScalar(const mxArray * a) { return 0; }
 bool mxIsLogicalScalarTrue(const mxArray * a) { return 0; }
 bool mxIsNumeric(const mxArray * a) { return 0; }
 bool mxIsSparse(const mxArray * a) { return 0; }
 bool mxIsStruct(const mxArray * a) { return 0; }
+bool mxIsUint8(const mxArray * a) { return 0; }
 void mxSetCell(mxArray * a, mwIndex b, mxArray * c) {}
 void mxSetField(mxArray * a, mwIndex b, const char * c, mxArray * d) {}
 void mxSetProperty(mxArray * a, mwIndex b, const char * c, const mxArray * d) {}
