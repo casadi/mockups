@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <stdint.h>
 
 /* Opaque handles */
 typedef struct MSKenv  *MSKenv_t;
@@ -14,6 +15,7 @@ typedef void           *MSKuserhandle_t;
 
 /* Numeric / boolean primitives */
 typedef int      MSKint32t;
+typedef int64_t  MSKint64t;
 typedef int      MSKbooleant;
 typedef double   MSKrealt;
 typedef int      MSKrescodee;
@@ -122,6 +124,16 @@ DLLSYMBOL MSKrescodee (*MSK_putqobj)(MSKtask_t, MSKint32t, const MSKint32t *, co
 DLLSYMBOL MSKrescodee (*MSK_putvartype)(MSKtask_t, MSKint32t, MSKvariabletypee);
 #define MSK_appendcone adaptor_MSK_appendcone
 DLLSYMBOL MSKrescodee (*MSK_appendcone)(MSKtask_t, MSKconetypee, MSKrealt, MSKint32t, const MSKint32t *);
+#define MSK_appendafes adaptor_MSK_appendafes
+DLLSYMBOL MSKrescodee (*MSK_appendafes)(MSKtask_t, MSKint64t);
+#define MSK_putafefentry adaptor_MSK_putafefentry
+DLLSYMBOL MSKrescodee (*MSK_putafefentry)(MSKtask_t, MSKint64t, MSKint32t, MSKrealt);
+#define MSK_putafegslice adaptor_MSK_putafegslice
+DLLSYMBOL MSKrescodee (*MSK_putafegslice)(MSKtask_t, MSKint64t, MSKint64t, const MSKrealt *);
+#define MSK_appendsvecpsdconedomain adaptor_MSK_appendsvecpsdconedomain
+DLLSYMBOL MSKrescodee (*MSK_appendsvecpsdconedomain)(MSKtask_t, MSKint64t, MSKint64t *);
+#define MSK_appendaccseq adaptor_MSK_appendaccseq
+DLLSYMBOL MSKrescodee (*MSK_appendaccseq)(MSKtask_t, MSKint64t, MSKint64t, MSKint64t, const MSKrealt *);
 
 #define MSK_optimizetrm adaptor_MSK_optimizetrm
 DLLSYMBOL MSKrescodee (*MSK_optimizetrm)(MSKtask_t, MSKrescodee *);
@@ -176,6 +188,11 @@ MSKrescodee MSK_putarow    (MSKtask_t, MSKint32t, MSKint32t, const MSKint32t *, 
 MSKrescodee MSK_putqobj    (MSKtask_t, MSKint32t, const MSKint32t *, const MSKint32t *, const MSKrealt *);
 MSKrescodee MSK_putvartype (MSKtask_t, MSKint32t, MSKvariabletypee);
 MSKrescodee MSK_appendcone (MSKtask_t, MSKconetypee, MSKrealt, MSKint32t, const MSKint32t *);
+MSKrescodee MSK_appendafes  (MSKtask_t, MSKint64t);
+MSKrescodee MSK_putafefentry(MSKtask_t, MSKint64t, MSKint32t, MSKrealt);
+MSKrescodee MSK_putafegslice(MSKtask_t, MSKint64t, MSKint64t, const MSKrealt *);
+MSKrescodee MSK_appendsvecpsdconedomain(MSKtask_t, MSKint64t, MSKint64t *);
+MSKrescodee MSK_appendaccseq(MSKtask_t, MSKint64t, MSKint64t, MSKint64t, const MSKrealt *);
 
 MSKrescodee MSK_optimizetrm(MSKtask_t, MSKrescodee *);
 

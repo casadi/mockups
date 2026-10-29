@@ -25,6 +25,11 @@ MSKrescodee (*MSK_putarow)(MSKtask_t, MSKint32t, MSKint32t, const MSKint32t *, c
 MSKrescodee (*MSK_putqobj)(MSKtask_t, MSKint32t, const MSKint32t *, const MSKint32t *, const MSKrealt *) = NULL;
 MSKrescodee (*MSK_putvartype)(MSKtask_t, MSKint32t, MSKvariabletypee) = NULL;
 MSKrescodee (*MSK_appendcone)(MSKtask_t, MSKconetypee, MSKrealt, MSKint32t, const MSKint32t *) = NULL;
+MSKrescodee (*MSK_appendafes)(MSKtask_t, MSKint64t) = NULL;
+MSKrescodee (*MSK_putafefentry)(MSKtask_t, MSKint64t, MSKint32t, MSKrealt) = NULL;
+MSKrescodee (*MSK_putafegslice)(MSKtask_t, MSKint64t, MSKint64t, const MSKrealt *) = NULL;
+MSKrescodee (*MSK_appendsvecpsdconedomain)(MSKtask_t, MSKint64t, MSKint64t *) = NULL;
+MSKrescodee (*MSK_appendaccseq)(MSKtask_t, MSKint64t, MSKint64t, MSKint64t, const MSKrealt *) = NULL;
 MSKrescodee (*MSK_optimizetrm)(MSKtask_t, MSKrescodee *) = NULL;
 MSKrescodee (*MSK_getsolsta)(MSKtask_t, MSKsoltypee, MSKsolstae *) = NULL;
 MSKrescodee (*MSK_getprosta)(MSKtask_t, MSKsoltypee, MSKprostae *) = NULL;
@@ -98,6 +103,11 @@ int mosek_adaptor_load(char* err_msg, unsigned int err_msg_len) {
     LOAD_SYM(MSK_putqobj,              MSKrescodee (*)(MSKtask_t, MSKint32t, const MSKint32t *, const MSKint32t *, const MSKrealt *));
     LOAD_SYM(MSK_putvartype,           MSKrescodee (*)(MSKtask_t, MSKint32t, MSKvariabletypee));
     LOAD_SYM(MSK_appendcone,           MSKrescodee (*)(MSKtask_t, MSKconetypee, MSKrealt, MSKint32t, const MSKint32t *));
+    LOAD_SYM(MSK_appendafes,           MSKrescodee (*)(MSKtask_t, MSKint64t));
+    LOAD_SYM(MSK_putafefentry,         MSKrescodee (*)(MSKtask_t, MSKint64t, MSKint32t, MSKrealt));
+    LOAD_SYM(MSK_putafegslice,         MSKrescodee (*)(MSKtask_t, MSKint64t, MSKint64t, const MSKrealt *));
+    LOAD_SYM(MSK_appendsvecpsdconedomain,MSKrescodee (*)(MSKtask_t, MSKint64t, MSKint64t *));
+    LOAD_SYM(MSK_appendaccseq,         MSKrescodee (*)(MSKtask_t, MSKint64t, MSKint64t, MSKint64t, const MSKrealt *));
     LOAD_SYM(MSK_optimizetrm,          MSKrescodee (*)(MSKtask_t, MSKrescodee *));
     LOAD_SYM(MSK_getsolsta,            MSKrescodee (*)(MSKtask_t, MSKsoltypee, MSKsolstae *));
     LOAD_SYM(MSK_getprosta,            MSKrescodee (*)(MSKtask_t, MSKsoltypee, MSKprostae *));
@@ -140,6 +150,11 @@ MSKrescodee MSK_putarow(MSKtask_t a, MSKint32t b, MSKint32t c, const MSKint32t *
 MSKrescodee MSK_putqobj(MSKtask_t a, MSKint32t b, const MSKint32t *c, const MSKint32t *d, const MSKrealt *e) { (void)a; (void)b; (void)c; (void)d; (void)e; return 0; }
 MSKrescodee MSK_putvartype(MSKtask_t a, MSKint32t b, MSKvariabletypee c) { (void)a; (void)b; (void)c; return 0; }
 MSKrescodee MSK_appendcone(MSKtask_t a, MSKconetypee b, MSKrealt c, MSKint32t d, const MSKint32t *e) { (void)a; (void)b; (void)c; (void)d; (void)e; return 0; }
+MSKrescodee MSK_appendafes(MSKtask_t a, MSKint64t b) { (void)a; (void)b; return 0; }
+MSKrescodee MSK_putafefentry(MSKtask_t a, MSKint64t b, MSKint32t c, MSKrealt d) { (void)a; (void)b; (void)c; (void)d; return 0; }
+MSKrescodee MSK_putafegslice(MSKtask_t a, MSKint64t b, MSKint64t c, const MSKrealt *d) { (void)a; (void)b; (void)c; (void)d; return 0; }
+MSKrescodee MSK_appendsvecpsdconedomain(MSKtask_t a, MSKint64t b, MSKint64t *c) { (void)a; (void)b; (void)c; return 0; }
+MSKrescodee MSK_appendaccseq(MSKtask_t a, MSKint64t b, MSKint64t c, MSKint64t d, const MSKrealt *e) { (void)a; (void)b; (void)c; (void)d; (void)e; return 0; }
 
 MSKrescodee MSK_optimizetrm(MSKtask_t a, MSKrescodee *b) { (void)a; (void)b; return 0; }
 
